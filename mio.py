@@ -14,7 +14,19 @@ redirect_body = """
 </head>
 """
 
-num = 0
+url_pinchable = """
+<html>
+    <body>
+        <p>Pincha aqui para ser redirigido: 
+            <a href={}>{}</a>.
+        </p>
+        <p>Pincha aqui para ser redirigido: 
+            <a href={}>{}</a>.
+        </p>
+    </body>
+</html>
+
+"""
 
 def create_entradas(content):
     entradas_html = ""
@@ -29,10 +41,8 @@ class contentApp (webapp.webApp):
     with the web content."""
 
     # Declare and initialize content
-    short_url = {'/page': 'google.com',
-               '/meri': 'a meri'
-               }
-    long_url= {'google.com': 'http://localhost:1234/page'}
+    short_url = {}
+    long_url= {}
 
     def parse(self, request):
         """Return the resource name (including /)"""
@@ -53,11 +63,6 @@ class contentApp (webapp.webApp):
         """
         method, resource, body = parsedRequest
 
-        #if method == 'PUT':
-         #   page, content = body.split('&')
-          #  resource_request = page.split('=')[1]
-           # content = content.split('=')[1]
-            #self.content["/"+resource_request] = content
         if method == 'GET': 
             if resource == '/':
                 httpCode = "200 OK"
@@ -65,25 +70,30 @@ class contentApp (webapp.webApp):
                 htmlBody = "<html><body>" + formulario+ entradas_html +"</body></html>"
             elif resource in self.short_url:
                 httpCode = "302 Redirect"
-                htmlBody = redirect_body.format(self.short_url[resource])
+                htmlBody = redirect_body.format("http://"+self.short_url[resource])
             else:
                 httpCode = "404 Not Found"
                 htmlBody = "Not Found"
         elif method == "POST":
+            
+            try: 
+                resource_request = body.split('=')[1]
+            except IndexError:
+                httpCode = "404 Not Found"
+                htmlBody = "<html><body>Peticion invalida</body></html>"
+                return (httpCode, htmlBody)
             httpCode = "200 OK"
-            resource_request = body.split('=')[1]
             if not(resource_request.startswith('http://') or resource_request.startswith('https://')):
                 requested_item = resource_request
                 resource_request = 'http://' + resource_request
             else:
                 requested_item = resource_request[resource_request.index('/') + 2:]
-            if requested_item in self.long_url:
-                htmlBody = "<html><body><p><a href="+self.long_url[requested_item] + ">pincha aqui para ser redirigido"+self.long_url[requested_item] + "</a>.</p></body></html>"
-            else:
-                self.long_url[requested_item] = "/"+ num
-                self.short_url["/"+num] = requested_item
-                num = num + 1
-                htmlBody = "<html><body>" + "eres una pichume" +"</body></html>"
+            if not requested_item in self.long_url:
+                self.long_url[requested_item] = "/"+ str(len(self.short_url))
+                self.short_url["/"+ str(len(self.short_url))] = requested_item
+            htmlBody = url_pinchable.format(self.long_url[requested_item], 
+                                            self.long_url[requested_item], 
+                                            resource_request, requested_item)
             
         return (httpCode, htmlBody)
 
