@@ -75,8 +75,8 @@ sudo apt install python-pip
                     + "</body></html>"
             elif resource in self.short_url:
                 httpCode = "302 Redirect"
-                htmlBody =
-                redirect_body.format("http://" + self.short_url[resource])
+                htmlBody = \
+                    redirect_body.format("http://" + self.short_url[resource])
             else:
                 httpCode = "404 Not Found"
                 htmlBody = "Not Found"
@@ -96,8 +96,8 @@ sudo apt install python-pip
                 requested_item = resource_request
                 resource_request = 'http://' + resource_request
             else:
-                requested_item =
-                resource_request[resource_request.index('/') + 2:]
+                requested_item = \
+                    resource_request[resource_request.index('/') + 2:]
             if requested_item not in self.long_url:
                 self.long_url[requested_item] = "/" + str(len(self.short_url))
                 self.short_url["/" + str(len(self.short_url))] = requested_item
