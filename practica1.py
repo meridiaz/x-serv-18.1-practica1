@@ -92,7 +92,7 @@ sudo apt install python-pip
             httpCode = "200 OK"
 
             if not(resource_request.startswith('http://') or
-            resource_request.startswith('https://')):
+                    resource_request.startswith('https://')):
                 requested_item = resource_request
                 resource_request = 'http://' + resource_request
             else:
