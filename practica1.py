@@ -110,4 +110,4 @@ sudo apt install python-pip
 
 
 if __name__ == "__main__":
-    testWebApp = contentApp("localhost", 1234)
+    testWebApp = contentApp("localhost", 1235)
