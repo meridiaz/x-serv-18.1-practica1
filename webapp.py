@@ -55,7 +55,7 @@ class webApp:
             request = recvSocket.recv(2048).decode('utf-8')
             if len(request) == 0:
                 print("Received empty connection")
-            else:        
+            else:
                 print(request)
                 parsedRequest = self.parse(request)
                 (returnCode, htmlAnswer) = self.process(parsedRequest)
@@ -65,4 +65,4 @@ class webApp:
             recvSocket.close()
 
 if __name__ == "__main__":
-    testWebApp = webApp("localhost", 1234)
+    testWebApp = webApp("localhost", 1235)
